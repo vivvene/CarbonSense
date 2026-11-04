@@ -8,6 +8,13 @@ export const calculateEmissions = (electricityKwh, transport) => {
   const transportBreakdown = transport.map((journey) => {
     const factor = emissionFactors.transport[journey.mode];
 
+    // Prevent calculations with missing emission factors
+    if (typeof factor !== "number" || !Number.isFinite(factor)) {
+      throw new Error(
+        `Emission factor unavailable for transport mode: ${journey.mode}`,
+      );
+    }
+
     const emissions = journey.distanceKm * factor;
 
     transportEmissions += emissions;

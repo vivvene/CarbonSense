@@ -1,312 +1,330 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CarbonSense</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-</head>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
 
-<body>
-
+  <body>
     <header>
-        <h1>🌱 CarbonSense</h1>
-        <p>Measure less. Understand more. Act smarter.</p>
+      <h1>🌱 CarbonSense</h1>
+      <p>Measure less. Understand more. Act smarter.</p>
 
-        <nav>
-            <button type="button" data-section="homeSection">Home</button>
-            <button type="button" data-section="formSection">Calculator</button>
-            <button type="button" data-section="dashboardSection">Dashboard</button>
-            <button type="button" data-section="recommendationsSection">Recommendations</button>
-            <button type="button" data-section="simulatorSection">What-if Simulator</button>
-        </nav>
+      <nav>
+        <button type="button" data-section="homeSection">Home</button>
+        <button type="button" data-section="formSection">Calculator</button>
+        <button type="button" data-section="dashboardSection">Dashboard</button>
+        <button type="button" data-section="recommendationsSection">
+          Recommendations
+        </button>
+        <button type="button" data-section="simulatorSection">
+          What-if Simulator
+        </button>
+      </nav>
     </header>
 
     <main>
+      <!-- HOME SECTION -->
+      <section id="homeSection" class="home-section">
+        <div class="hero-content">
+          <p class="eyebrow">A MORE CONSCIOUS WAY TO LIVE</p>
 
-        <!-- HOME SECTION -->
-        <section id="homeSection" class="home-section">
-
-    <div class="hero-content">
-
-        <p class="eyebrow">A MORE CONSCIOUS WAY TO LIVE</p>
-
-        <h1>
-            Small choices.<br>
+          <h1>
+            Small choices.<br />
             <span>Lasting impact.</span>
-        </h1>
+          </h1>
 
-        <p class="hero-description">
-            Understand your energy consumption, measure
-            your carbon footprint, and discover simple ways
-            to build a more sustainable tomorrow.
-        </p>
+          <p class="hero-description">
+            Understand your energy consumption, measure your carbon footprint,
+            and discover simple ways to build a more sustainable tomorrow.
+          </p>
 
-        <button id="startButton" class="hero-button">
+          <button id="startButton" class="hero-button">
             Explore your footprint
             <span class="arrow">→</span>
-        </button>
+          </button>
 
-        <p class="hero-note">
-            MEASURE · UNDERSTAND · REDUCE
-        </p>
-
-    </div>
-
-    <div class="hero-visual">
-
-        <div class="visual-label">THE BIGGER PICTURE</div>
-
-        <div class="visual-circle">
-            <div class="circle-inner">
-                <span class="circle-number">01</span>
-                <span class="circle-text">LIVE<br>MINDFULLY</span>
-            </div>
+          <p class="hero-note">MEASURE · UNDERSTAND · REDUCE</p>
         </div>
 
-        <div class="visual-caption">
+        <div class="hero-visual">
+          <div class="visual-label">THE BIGGER PICTURE</div>
+
+          <div class="visual-circle">
+            <div class="circle-inner">
+              <span class="circle-number">01</span>
+              <span class="circle-text">LIVE<br />MINDFULLY</span>
+            </div>
+          </div>
+
+          <div class="visual-caption">
             <span class="caption-line"></span>
             Every action leaves a footprint.
+          </div>
         </div>
+      </section>
 
-    </div>
+      <!-- CALCULATOR SECTION -->
+      <section class="form-section" id="formSection" hidden>
+        <h2>Carbon Footprint Calculator</h2>
+        <p>Enter your monthly electricity and commuting details.</p>
 
-</section>
+        <form id="carbonForm">
+          <label for="mode">Calculation mode</label>
+          <select id="mode">
+            <option value="individual">Individual</option>
+            <option value="campus">Campus</option>
+          </select>
 
+          <div class="form-panel electricity-panel">
+            <p class="form-panel-number">01 — ENERGY</p>
 
-        <!-- CALCULATOR SECTION -->
-        <section class="form-section" id="formSection" hidden>
-            <h2>Carbon Footprint Calculator</h2>
-            <p>Enter your monthly electricity and commuting details.</p>
+            <h3>Electricity Consumption</h3>
 
-            <form id="carbonForm">
-
-                <label for="mode">Calculation mode</label>
-                <select id="mode">
-                    <option value="individual">Individual</option>
-                    <option value="campus">Campus</option>
-                </select>
-
-                <div class="form-panel electricity-panel">
-
-    <p class="form-panel-number">01 — ENERGY</p>
-
-    <h3>Electricity Consumption</h3>
-
-    <p class="form-panel-description">
-        Start with your household's monthly electricity usage.
-    </p>
-
-    <label for="electricity">
-        Monthly electricity consumption (kWh)
-    </label>
-
-    <input type="number" id="electricity"
-           min="0" step="any" required
-           placeholder="Enter electricity units">
-
-</div>
-
-
-                <!-- INDIVIDUAL TRANSPORT -->
-                <div id="individualSection"
-                class="form-panel transport-panel"></div>
-
-                    <h3>Personal Transportation</h3>
-
-                    <label for="transportMode">Transport mode</label>
-
-                    <select id="transportMode">
-                        <option value="bus">Bus</option>
-                        <option value="petrolCar">Petrol car</option>
-                        <option value="dieselCar">Diesel car</option>
-                        <option value="twoWheeler">Motorcycle / Scooter</option>
-                        <option value="auto">Auto-rickshaw</option>
-                        <option value="metro">Metro / Train</option>
-                        <option value="walking">Walking</option>
-                        <option value="cycling">Cycling</option>
-                    </select>
-
-                    <label for="distance">
-                        Daily round-trip distance (km)
-                    </label>
-
-                    <input type="number" id="distance"
-                           min="0" step="any" required
-                           placeholder="e.g. 15">
-
-                    <label for="travelDays">
-                        Travel days per month
-                    </label>
-
-                    <input type="number" id="travelDays"
-                           min="0" max="31" step="1" required
-                           placeholder="e.g. 22">
-
-                </div>
-
-
-                <!-- CAMPUS TRANSPORT -->
-                <div id="campusSection" hidden>
-                    class="form-panel transport-panel"hidden>
-
-                    <h3>Campus Transportation</h3>
-
-                    <p>Enter the average daily round-trip distance
-                       and number of commuters for each mode.</p>
-
-                    <label for="campusDays">Operating days per month</label>
-
-                    <input type="number" id="campusDays"
-                           min="0" max="31" step="1"
-                           placeholder="e.g. 22">
-
-                    <h4>Bus</h4>
-
-                    <label for="busCount">Number of bus commuters</label>
-                    <input type="number" id="busCount" min="0"
-                           placeholder="Number of commuters">
-
-                    <label for="busDistance">Average daily distance (km)</label>
-                    <input type="number" id="busDistance" min="0"
-                           step="any" placeholder="Round-trip distance">
-
-                    <h4>Car</h4>
-
-                    <label for="carCount">Number of car commuters</label>
-                    <input type="number" id="carCount" min="0"
-                           placeholder="Number of commuters">
-
-                    <label for="carDistance">Average daily distance (km)</label>
-                    <input type="number" id="carDistance" min="0"
-                           step="any" placeholder="Round-trip distance">
-
-                    <h4>Two-wheeler</h4>
-
-                    <label for="bikeCount">Number of two-wheeler commuters</label>
-                    <input type="number" id="bikeCount" min="0"
-                           placeholder="Number of commuters">
-
-                    <label for="bikeDistance">Average daily distance (km)</label>
-                    <input type="number" id="bikeDistance" min="0"
-                           step="any" placeholder="Round-trip distance">
-
-                    <h4>Metro / Train</h4>
-
-                    <label for="metroCount">Number of metro/train commuters</label>
-                    <input type="number" id="metroCount" min="0"
-                           placeholder="Number of commuters">
-
-                    <label for="metroDistance">Average daily distance (km)</label>
-                    <input type="number" id="metroDistance" min="0"
-                           step="any" placeholder="Round-trip distance">
-
-                </div>
-
-                <button type="submit">Calculate Footprint</button>
-
-            </form>
-
-            <div id="result" aria-live="polite"></div>
-        </section>
-
-
-        <!-- DASHBOARD SECTION -->
-
-<section id="dashboardSection" hidden>
-
-    <div class="dashboard-header">
-
-        <div>
-            <p class="dashboard-eyebrow">
-                YOUR PERSONAL SUSTAINABILITY SPACE
+            <p class="form-panel-description">
+              Start with your household's monthly electricity usage.
             </p>
 
+            <label for="electricity">
+              Monthly electricity consumption (kWh)
+            </label>
+
+            <input
+              type="number"
+              id="electricity"
+              min="0"
+              step="any"
+              required
+              placeholder="Enter electricity units"
+            />
+          </div>
+
+          <!-- INDIVIDUAL TRANSPORT -->
+          <div id="individualSection" class="form-panel transport-panel">
+            <h3>Personal Transportation</h3>
+
+            <label for="transportMode">Transport mode</label>
+
+            <select id="transportMode">
+              <option value="bus">Bus</option>
+              <option value="petrolCar">Petrol car</option>
+              <option value="dieselCar">Diesel car</option>
+              <option value="twoWheeler">Motorcycle / Scooter</option>
+              <option value="auto">Auto-rickshaw</option>
+              <option value="metro">Metro / Train</option>
+              <option value="walking">Walking</option>
+              <option value="cycling">Cycling</option>
+            </select>
+
+            <label for="distance"> Daily round-trip distance (km) </label>
+
+            <input
+              type="number"
+              id="distance"
+              min="0"
+              step="any"
+              required
+              placeholder="e.g. 15"
+            />
+
+            <label for="travelDays"> Travel days per month </label>
+
+            <input
+              type="number"
+              id="travelDays"
+              min="0"
+              max="31"
+              step="1"
+              required
+              placeholder="e.g. 22"
+            />
+          </div>
+
+          <!-- CAMPUS TRANSPORT -->
+          <div id="campusSection" hidden class="form-panel transport-panel">
+            <h3>Campus Transportation</h3>
+
+            <p>
+              Enter the average daily round-trip distance and number of
+              commuters for each mode.
+            </p>
+
+            <label for="campusDays">Operating days per month</label>
+
+            <input
+              type="number"
+              id="campusDays"
+              min="0"
+              max="31"
+              step="1"
+              placeholder="e.g. 22"
+            />
+
+            <h4>Bus</h4>
+
+            <label for="busCount">Number of bus commuters</label>
+            <input
+              type="number"
+              id="busCount"
+              min="0"
+              placeholder="Number of commuters"
+            />
+
+            <label for="busDistance">Average daily distance (km)</label>
+            <input
+              type="number"
+              id="busDistance"
+              min="0"
+              step="any"
+              placeholder="Round-trip distance"
+            />
+
+            <h4>Car</h4>
+
+            <label for="carCount">Number of car commuters</label>
+            <input
+              type="number"
+              id="carCount"
+              min="0"
+              placeholder="Number of commuters"
+            />
+
+            <label for="carDistance">Average daily distance (km)</label>
+            <input
+              type="number"
+              id="carDistance"
+              min="0"
+              step="any"
+              placeholder="Round-trip distance"
+            />
+
+            <h4>Two-wheeler</h4>
+
+            <label for="bikeCount">Number of two-wheeler commuters</label>
+            <input
+              type="number"
+              id="bikeCount"
+              min="0"
+              placeholder="Number of commuters"
+            />
+
+            <label for="bikeDistance">Average daily distance (km)</label>
+            <input
+              type="number"
+              id="bikeDistance"
+              min="0"
+              step="any"
+              placeholder="Round-trip distance"
+            />
+
+            <h4>Metro / Train</h4>
+
+            <label for="metroCount">Number of metro/train commuters</label>
+            <input
+              type="number"
+              id="metroCount"
+              min="0"
+              placeholder="Number of commuters"
+            />
+
+            <label for="metroDistance">Average daily distance (km)</label>
+            <input
+              type="number"
+              id="metroDistance"
+              min="0"
+              step="any"
+              placeholder="Round-trip distance"
+            />
+          </div>
+
+          <button type="submit">Calculate Footprint</button>
+        </form>
+
+        <div id="result" aria-live="polite"></div>
+      </section>
+
+      <!-- DASHBOARD SECTION -->
+
+      <section id="dashboardSection" hidden>
+        <div class="dashboard-header">
+          <div>
+            <p class="dashboard-eyebrow">YOUR PERSONAL SUSTAINABILITY SPACE</p>
+
             <h2>
-                Your environmental<br>
-                <span>footprint.</span>
+              Your environmental<br />
+              <span>footprint.</span>
             </h2>
 
             <p class="dashboard-description">
-                A clearer picture of your everyday impact.
-                Understand your consumption and take steps
-                towards a greener future.
+              A clearer picture of your everyday impact. Understand your
+              consumption and take steps towards a greener future.
             </p>
-        </div>
+          </div>
 
-        <div class="dashboard-mark">
+          <div class="dashboard-mark">
             <span>CS</span>
             <p>CARBONSENSE</p>
+          </div>
         </div>
 
-    </div>
+        <div class="dashboard-divider"></div>
 
-    <div class="dashboard-divider"></div>
-
-    <div class="dashboard-content-area">
-
-        <div class="dashboard-section-heading">
+        <div class="dashboard-content-area">
+          <div class="dashboard-section-heading">
             <h3>Your overview</h3>
             <p>Insights into your environmental impact</p>
-        </div>
+          </div>
 
-        <div id="dashboardContent">
+          <div id="dashboardContent">
             <div class="dashboard-empty">
-                <span class="empty-number">01</span>
-                <h3>Your journey starts here.</h3>
-                <p>
-                    Calculate your carbon footprint first
-                    to see your personalised dashboard.
-                </p>
+              <span class="empty-number">01</span>
+              <h3>Your journey starts here.</h3>
+              <p>
+                Calculate your carbon footprint first to see your personalised
+                dashboard.
+              </p>
             </div>
+          </div>
         </div>
+      </section>
 
-    </div>
+      <!-- RECOMMENDATIONS SECTION -->
+      <section id="recommendationsSection" hidden>
+        <h2>Carbon Reduction Advisor</h2>
+        <p>Discover practical ways to reduce your carbon footprint.</p>
 
-</section>
+        <div id="recommendationsContent">
+          <p>
+            Your personalised suggestions will appear here after calculation.
+          </p>
+        </div>
+      </section>
 
+      <!-- WHAT-IF SIMULATOR SECTION -->
+      <section id="simulatorSection" hidden>
+        <h2>What-if Simulator</h2>
 
-        <!-- RECOMMENDATIONS SECTION -->
-        <section id="recommendationsSection" hidden>
-            <h2>Carbon Reduction Advisor</h2>
-            <p>Discover practical ways to reduce your carbon footprint.</p>
+        <p>
+          Explore how small changes in your everyday habits could reduce your
+          carbon footprint.
+        </p>
 
-            <div id="recommendationsContent">
-                <p>Your personalised suggestions will appear here after calculation.</p>
-            </div>
-        </section>
-
-
-        <!-- WHAT-IF SIMULATOR SECTION -->
-        <section id="simulatorSection" hidden>
-
-            <h2>What-if Simulator</h2>
+        <div id="simulatorContent">
+          <div class="dashboard-insight">
+            <h3>Explore your reduction potential</h3>
 
             <p>
-                Explore how small changes in your everyday habits
-                could reduce your carbon footprint.
+              Calculate your carbon footprint first. Your personalised
+              simulation options will appear here.
             </p>
-
-            <div id="simulatorContent">
-
-                <div class="dashboard-insight">
-                    <h3>Explore your reduction potential</h3>
-
-                    <p>
-                        Calculate your carbon footprint first.
-                        Your personalised simulation options will
-                        appear here.
-                    </p>
-                </div>
-
-            </div>
-
-        </section>
-
+          </div>
+        </div>
+      </section>
     </main>
-
 
     <!-- CHART.JS LIBRARY -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -318,6 +336,5 @@
     <script src="./js/recommendations.js"></script>
     <script src="./js/simulator.js"></script>
     <script src="./js/main.js"></script>
-
-</body>
+  </body>
 </html>

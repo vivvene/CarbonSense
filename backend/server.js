@@ -10,6 +10,26 @@ const PORT = 5000;
 
 // 4. Middleware to read JSON data
 app.use(express.json());
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Allow local development servers
+  if (origin && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  }
+
+  // Handle browser preflight requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
 app.use("/api/carbon", carbonRoutes);
 
 // 5. Create our first route

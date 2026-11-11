@@ -1,28 +1,29 @@
-// 1. Import Express
 import express from "express";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+
 import carbonRoutes from "./routes/carbonRoutes.js";
+import sensorRoutes from "./routes/sensorRoutes.js";
 
-// 2. Create an Express application
+dotenv.config();
+
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// 3. Define the port
-const PORT = 5000;
-
-// 4. Middleware to read JSON data
+// JSON middleware
 app.use(express.json());
 
+// CORS middleware
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 
-  // Allow local development servers
-  if (origin && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+  if (origin && /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   }
 
-  // Handle browser preflight requests
   if (req.method === "OPTIONS") {
     return res.sendStatus(204);
   }
@@ -30,14 +31,16 @@ app.use((req, res, next) => {
   next();
 });
 
+// API routes
 app.use("/api/carbon", carbonRoutes);
+app.use("/api/sensors", sensorRoutes);
 
-// 5. Create our first route
+// Welcome route
 app.get("/", (req, res) => {
   res.send("Welcome to CarbonSense Backend! 🌱");
 });
 
-// 6. Health check route
+// Health check
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
@@ -45,6 +48,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Project information
 app.get("/api/project", (req, res) => {
   res.json({
     project: "CarbonSense",
@@ -54,18 +58,25 @@ app.get("/api/project", (req, res) => {
   });
 });
 
+// Test route
 app.post("/api/test", (req, res) => {
-  // Receive data from the frontend
-  const userData = req.body;
-
-  // Send the received data back
   res.json({
     message: "Data received successfully!",
-    receivedData: userData,
+    receivedData: req.body,
   });
 });
 
-// 7. Start the server
-app.listen(PORT, () => {
-  console.log(`CarbonSense server running at http://localhost:${PORT}`);
-});
+// Start server after connecting to MongoDB
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Server startup failed:", error.message);
+  }
+};
+
+startServer();

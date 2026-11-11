@@ -3,7 +3,9 @@ console.log("Recommendations JS Loaded");
 function updateRecommendations(data) {
   const content = document.getElementById("recommendationsContent");
 
-  content.innerHTML = "";
+  if (!content || !data) return;
+
+  content.replaceChildren();
 
   const heading = document.createElement("h3");
   heading.textContent = "Your Personalised Action Plan";
@@ -11,12 +13,20 @@ function updateRecommendations(data) {
 
   const suggestions = [];
 
+  // ========================================
+  // ELECTRICITY RECOMMENDATIONS
+  // ========================================
+
   if (data.electricityEmissions > 0) {
     suggestions.push([
       "Reduce electricity consumption",
       "Switch off unused lights, fans and appliances. Choose energy-efficient LED lighting.",
     ]);
   }
+
+  // ========================================
+  // INDIVIDUAL RECOMMENDATIONS
+  // ========================================
 
   if (data.mode === "individual") {
     const advice = {
@@ -51,36 +61,50 @@ function updateRecommendations(data) {
     if (advice[data.transportMode]) {
       suggestions.push(advice[data.transportMode]);
     }
-  } else {
-    const modes = data.transportBreakdown || [];
+  }
 
-    const highestJourney = modes.reduce(
-      (highest, current) =>
-        current.emissions > highest.emissions ? current : highest,
+  // ========================================
+  // CAMPUS RECOMMENDATIONS
+  // ========================================
+  else if (data.mode === "campus") {
+    const modes = data.transportBreakdown || {};
+
+    const highestJourney = Object.entries(modes).reduce(
+      (highest, [mode, emissions]) =>
+        emissions > highest.emissions ? { mode, emissions } : highest,
       { mode: null, emissions: 0 },
     );
-
-    const highest = highestJourney.mode;
 
     const advice = {
       bus: "Encourage more students and staff to use shared buses.",
       petrolCar: "Promote carpooling to reduce individual car journeys.",
+      dieselCar: "Promote carpooling and shared transportation.",
       twoWheeler: "Encourage public transport, cycling and walking.",
+      auto: "Promote shared autos and public transport.",
       metro: "Promote metro connectivity and last-mile transport.",
     };
 
     if (data.transportEmissions > 0) {
       suggestions.push([
         "Improve campus commuting",
-        advice[highest] || "Encourage sustainable commuting.",
+        advice[highestJourney.mode] ||
+          "Encourage sustainable commuting across the campus.",
       ]);
     }
   }
+
+  // ========================================
+  // GENERAL RECOMMENDATION
+  // ========================================
 
   suggestions.push([
     "Monitor your monthly footprint",
     "Compare monthly results to understand whether your reduction efforts are working.",
   ]);
+
+  // ========================================
+  // DISPLAY RECOMMENDATIONS
+  // ========================================
 
   suggestions.forEach(([titleText, descriptionText]) => {
     const card = document.createElement("div");

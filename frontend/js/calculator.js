@@ -4,18 +4,6 @@ console.log("CarbonSense Calculator Loaded");
 // EMISSION FACTORS
 // ========================================
 
-const EMISSION_FACTORS = {
-  electricity: 0.675,
-  bus: 0.104,
-  petrolCar: 0.209,
-  dieselCar: 0.213,
-  twoWheeler: 0.113,
-  auto: 0.17,
-  metro: 0.035,
-  walking: 0,
-  cycling: 0,
-};
-
 const TRANSPORT_LABELS = {
   bus: "Bus",
   petrolCar: "Petrol Car",
@@ -108,7 +96,10 @@ function displayResults(data) {
 
   const heading = document.createElement("h3");
 
-  heading.textContent = "Your Monthly Carbon Footprint";
+  heading.textContent =
+    data.mode === "campus"
+      ? "Monthly Campus Carbon Footprint"
+      : "Your Monthly Carbon Footprint";
 
   result.appendChild(heading);
 

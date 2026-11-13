@@ -255,16 +255,19 @@ carbonForm.addEventListener("submit", async function (event) {
     result.className = "result-card";
     result.textContent = "Calculating your carbon footprint...";
 
-    const response = await fetch("http://localhost:5000/api/carbon/calculate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${window.CARBONSENSE_API_URL}/api/carbon/calculate`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          electricityKwh: electricity,
+          transport,
+        }),
       },
-      body: JSON.stringify({
-        electricityKwh: electricity,
-        transport,
-      }),
-    });
+    );
 
     const apiData = await response.json();
 

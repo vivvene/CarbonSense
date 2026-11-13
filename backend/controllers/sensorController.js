@@ -345,14 +345,17 @@ export const getElectricityForecast = async (req, res) => {
     let mlResponse;
 
     try {
-      mlResponse = await fetch("http://127.0.0.1:8000/forecast", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      mlResponse = await fetch(
+        `${process.env.ML_SERVICE_URL || "http://127.0.0.1:8000"}/forecast`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ history }),
+          signal: AbortSignal.timeout(30000),
         },
-        body: JSON.stringify({ history }),
-        signal: AbortSignal.timeout(30000),
-      });
+      );
     } catch (error) {
       return res.status(503).json({
         success: false,

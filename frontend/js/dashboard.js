@@ -12,7 +12,7 @@ let transportChart = null;
 // IOT DASHBOARD CONFIGURATION
 // ========================================
 
-const SENSOR_API = "http://localhost:5000/api/sensors";
+const SENSOR_API = `${window.CARBONSENSE_API_URL}/api/sensors`;
 const CAMPUS_ID = "TIU_001";
 const REFRESH_INTERVAL = 30000;
 

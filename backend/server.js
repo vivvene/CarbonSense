@@ -17,7 +17,12 @@ app.use(express.json());
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 
-  if (origin && /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+  const isLocalOrigin =
+    origin && /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+
+  const isProductionOrigin = origin && origin === process.env.FRONTEND_URL;
+
+  if (origin && (isLocalOrigin || isProductionOrigin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");

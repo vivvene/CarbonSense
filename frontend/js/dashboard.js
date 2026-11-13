@@ -25,6 +25,17 @@ let sensorRefreshTimer = null;
 let sensorRequestInProgress = false;
 
 // ========================================
+// CAMPUS ML FORECAST CONFIGURATION
+// ========================================
+
+const FORECAST_API = `${SENSOR_API}/forecast`;
+const ELECTRICITY_EMISSION_FACTOR = 0.675;
+
+let campusForecast = null;
+let forecastChart = null;
+let forecastRequestInProgress = false;
+
+// ========================================
 // EXISTING DASHBOARD UPDATE
 // ========================================
 
@@ -324,7 +335,60 @@ function getSensorDashboardMarkup() {
                 </table>
             </div>
         </div>
+        <!-- 24-HOUR ML FORECAST -->
+        <div class="sensor-divider"></div>
 
+        <div class="sensor-heading">
+            <div>
+                <p class="dashboard-eyebrow">PREDICTIVE CAMPUS ANALYTICS</p>
+                <h3>Next 24 Hours — Electricity Forecast</h3>
+                <p class="sensor-description">
+                    Estimated campus electricity consumption using historical
+                    hourly readings and the forecasting model.
+                </p>
+            </div>
+            <span class="sensor-source-tag source-simulated">
+                ML Forecast
+            </span>
+        </div>
+
+        <div id="forecastMessage" class="sensor-message" aria-live="polite">
+            Loading electricity forecast...
+        </div>
+
+        <div class="sensor-summary-cards">
+            <div class="sensor-summary-card">
+                <span class="sensor-card-label">PREDICTED ELECTRICITY</span>
+                <strong id="forecastTotalEnergy">—</strong>
+                <span class="sensor-card-unit">kWh over next 24 hours</span>
+            </div>
+
+            <div class="sensor-summary-card">
+                <span class="sensor-card-label">ESTIMATED CO₂ EMISSIONS</span>
+                <strong id="forecastTotalCarbon">—</strong>
+                <span class="sensor-card-unit">kg CO₂e over next 24 hours</span>
+            </div>
+
+            <div class="sensor-summary-card">
+                <span class="sensor-card-label">AVERAGE HOURLY CONSUMPTION</span>
+                <strong id="forecastAverageEnergy">—</strong>
+                <span class="sensor-card-unit">kWh per hour</span>
+            </div>
+        </div>
+
+        <div class="sensor-chart-grid">
+            <div class="sensor-chart-panel">
+                <h4>Predicted Electricity Consumption</h4>
+                <div class="sensor-chart-container">
+                    <canvas id="forecastConsumptionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <p class="sensor-disclaimer">
+            Forecasts are model-generated estimates based on historical
+            simulated campus readings. They are not actual future measurements.
+        </p>
         <p class="sensor-disclaimer">
             Simulated readings are generated for demonstration and testing.
             They are not measurements from physical campus hardware.
@@ -393,7 +457,163 @@ async function fetchSensorData() {
     sensorRequestInProgress = false;
   }
 }
+// ========================================
+// FETCH CAMPUS ELECTRICITY FORECAST
+// ========================================
 
+async function fetchCampusForecast() {
+  if (forecastRequestInProgress) return;
+
+  forecastRequestInProgress = true;
+
+  const message = document.getElementById("forecastMessage");
+
+  try {
+    const response = await fetch(`${FORECAST_API}/${CAMPUS_ID}?hours=168`);
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Unable to generate campus forecast.");
+    }
+
+    campusForecast = result;
+
+    renderForecastDashboard();
+
+    if (message) {
+      message.textContent = `Forecast generated successfully using ${result.historicalReadingsUsed} historical hourly readings.`;
+      message.className = "sensor-message sensor-message-success";
+    }
+  } catch (error) {
+    console.error("Campus forecast error:", error);
+
+    if (message) {
+      message.textContent =
+        "Unable to load the electricity forecast: " + error.message;
+      message.className = "sensor-message sensor-message-error";
+    }
+  } finally {
+    forecastRequestInProgress = false;
+  }
+}
+
+// ========================================
+// RENDER CAMPUS FORECAST
+// ========================================
+
+function renderForecastDashboard() {
+  const forecast = campusForecast?.forecast;
+
+  if (!Array.isArray(forecast) || forecast.length === 0) return;
+
+  const totalEnergy = forecast.reduce(
+    (sum, item) => sum + Number(item.predictedKwh || 0),
+    0,
+  );
+
+  const totalCarbon = totalEnergy * ELECTRICITY_EMISSION_FACTOR;
+  const averageEnergy = totalEnergy / forecast.length;
+
+  setText("forecastTotalEnergy", totalEnergy.toFixed(2));
+  setText("forecastTotalCarbon", totalCarbon.toFixed(2));
+  setText("forecastAverageEnergy", averageEnergy.toFixed(2));
+
+  const canvas = document.getElementById("forecastConsumptionChart");
+
+  if (!canvas || typeof Chart === "undefined") return;
+
+  if (forecastChart) {
+    forecastChart.destroy();
+    forecastChart = null;
+  }
+
+  const labels = forecast.map((item) =>
+    new Date(item.timestamp).toLocaleString([], {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  );
+
+  const values = forecast.map((item) => Number(item.predictedKwh || 0));
+
+  forecastChart = new Chart(canvas, {
+    type: "line",
+
+    data: {
+      labels,
+
+      datasets: [
+        {
+          label: "Predicted electricity (kWh)",
+          data: values,
+          borderColor: "#526D51",
+          backgroundColor: "rgba(131, 151, 123, 0.18)",
+          fill: true,
+          tension: 0.3,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+        },
+      ],
+    },
+
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+
+      interaction: {
+        intersect: false,
+        mode: "index",
+      },
+
+      plugins: {
+        legend: {
+          display: true,
+          position: "bottom",
+        },
+
+        tooltip: {
+          callbacks: {
+            label: (context) => ` ${context.parsed.y.toFixed(2)} kWh`,
+          },
+        },
+      },
+
+      scales: {
+        x: {
+          grid: {
+            display: false,
+          },
+
+          ticks: {
+            color: "#72796E",
+            maxTicksLimit: 8,
+            maxRotation: 0,
+          },
+        },
+
+        y: {
+          beginAtZero: true,
+
+          title: {
+            display: true,
+            text: "Electricity (kWh)",
+          },
+
+          grid: {
+            color: "#E3E5DC",
+          },
+
+          ticks: {
+            color: "#72796E",
+          },
+        },
+      },
+    },
+  });
+}
 // ========================================
 // HANDLE DIFFERENT API RESPONSE SHAPES
 // ========================================
@@ -480,6 +700,7 @@ function renderSensorDashboard() {
 
   renderSensorCharts(filtered);
   renderSensorTable(filtered);
+  renderForecastDashboard();
   updateFilterButtons();
 }
 
@@ -761,6 +982,7 @@ function setupSensorDashboardEvents() {
 
     if (event.target.closest("#refreshSensorButton")) {
       fetchSensorData();
+      fetchCampusForecast();
       return;
     }
 
@@ -788,7 +1010,9 @@ function initializeSensorDashboard() {
   }
 
   setupSensorDashboardEvents();
+
   fetchSensorData();
+  fetchCampusForecast();
 
   if (sensorRefreshTimer) {
     clearInterval(sensorRefreshTimer);
@@ -796,6 +1020,7 @@ function initializeSensorDashboard() {
 
   sensorRefreshTimer = setInterval(() => {
     fetchSensorData();
+    fetchCampusForecast();
   }, REFRESH_INTERVAL);
 }
 

@@ -1,8 +1,12 @@
-node_modules/
-.env
-.env.*
-!.env.example
-npm-debug.log*
-.DS_Store
 
-backend/.env
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Python environment and test cache
+.pytest_cache/
+.mypy_cache/

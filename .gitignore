@@ -10,3 +10,11 @@ env/
 # Python environment and test cache
 .pytest_cache/
 .mypy_cache/
+
+# Node.js
+node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example

@@ -364,7 +364,28 @@ export const getElectricityForecast = async (req, res) => {
       });
     }
 
-    const forecastResult = await mlResponse.json();
+    const responseText = await mlResponse.text();
+
+    console.log("ML service status:", mlResponse.status);
+    console.log(
+      "ML service content-type:",
+      mlResponse.headers.get("content-type"),
+    );
+    console.log("ML service response:", responseText.slice(0, 500));
+
+    let forecastResult;
+
+    try {
+      forecastResult = JSON.parse(responseText);
+    } catch {
+      return res.status(502).json({
+        success: false,
+        message: "ML service returned a non-JSON response.",
+        mlStatus: mlResponse.status,
+        contentType: mlResponse.headers.get("content-type"),
+        responsePreview: responseText.slice(0, 300),
+      });
+    }
 
     if (!mlResponse.ok) {
       return res.status(mlResponse.status).json({

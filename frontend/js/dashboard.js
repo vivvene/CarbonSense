@@ -471,7 +471,10 @@ async function fetchCampusForecast() {
   try {
     const response = await fetch(`${FORECAST_API}/${CAMPUS_ID}?hours=168`);
 
-    const result = await response.json();
+    const responseText = await response.text();
+    console.log("Forecast API response:", response.status, responseText);
+
+    const result = JSON.parse(responseText);
 
     if (!response.ok) {
       throw new Error(result.message || "Unable to generate campus forecast.");

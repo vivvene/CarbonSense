@@ -25,32 +25,37 @@ function showSection(sectionId) {
     }
   });
 
-  // Render individual calculator dashboard charts
-  if (
-    sectionId === "dashboardSection" &&
-    typeof renderDashboardCharts === "function"
-  ) {
-    renderDashboardCharts();
+  if (sectionId === "dashboardSection") {
+    requestAnimationFrame(() => {
+      if (typeof renderDashboardCharts === "function") {
+        renderDashboardCharts();
+      }
+
+      if (typeof renderSensorDashboard === "function") {
+        renderSensorDashboard();
+      }
+
+      if (typeof fetchSensorData === "function") {
+        fetchSensorData();
+      }
+
+      if (typeof fetchCampusForecast === "function") {
+        fetchCampusForecast();
+      }
+    });
   }
 
-  // Refresh campus sensor dashboard when opened
-  if (
-    sectionId === "dashboardSection" &&
-    typeof fetchSensorData === "function"
-  ) {
-    fetchSensorData();
-  }
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
   if (
     sectionId === "simulatorSection" &&
     typeof renderSimulator === "function"
   ) {
     renderSimulator();
   }
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 }
 
 // ========================================

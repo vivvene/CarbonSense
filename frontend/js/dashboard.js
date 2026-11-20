@@ -410,7 +410,7 @@ async function fetchSensorData() {
 
   try {
     const readingsResponse = await fetch(
-      `${SENSOR_API}/${CAMPUS_ID}?limit=1000`,
+      `${SENSOR_API}/${CAMPUS_ID}?range=${selectedTimeRange}`,
     );
 
     if (!readingsResponse.ok) {
@@ -979,7 +979,8 @@ function setupSensorDashboardEvents() {
 
     if (filterButton) {
       selectedTimeRange = filterButton.dataset.range;
-      renderSensorDashboard();
+      updateFilterButtons();
+      fetchSensorData();
       return;
     }
 

@@ -65,20 +65,51 @@ export const addSensorReading = async (req, res) => {
   }
 };
 
-// GET: Retrieve campus sensor readings
+// GET: Retrieve campus sensor readings for a selected time range
 export const getSensorReadings = async (req, res) => {
   try {
-    const limit = Math.min(Math.max(Number(req.query.limit) || 100, 1), 1000);
+    const { campusId } = req.params;
+    const range = req.query.range;
 
-    const readings = await SensorReading.find({
-      campusId: req.params.campusId,
-    })
-      .sort({ timestamp: -1 })
-      .limit(limit)
-      .lean();
+    const rangeDurations = {
+      "24h": 24 * 60 * 60 * 1000,
+      "7d": 7 * 24 * 60 * 60 * 1000,
+      "30d": 30 * 24 * 60 * 60 * 1000,
+    };
+
+    const query = { campusId };
+
+    if (range) {
+      if (!rangeDurations[range]) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid range. Use 24h, 7d, or 30d.",
+        });
+      }
+
+      const cutoff = new Date(Date.now() - rangeDurations[range]);
+
+      query.timestamp = { $gte: cutoff };
+    }
+
+    let readingsQuery = SensorReading.find(query).sort({
+      timestamp: -1,
+    });
+
+    // Keep the existing limit for requests that don't specify a range.
+    // Range-based requests retrieve all records within that period.
+    if (!range) {
+      const limit = Math.min(Math.max(Number(req.query.limit) || 100, 1), 1000);
+
+      readingsQuery = readingsQuery.limit(limit);
+    }
+
+    const readings = await readingsQuery.lean();
 
     return res.status(200).json({
       success: true,
+      campusId,
+      range: range || "latest",
       count: readings.length,
       data: readings,
     });
